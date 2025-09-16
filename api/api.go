@@ -19,6 +19,17 @@ type CoinBalanceResponse struct {
 	Balance int64
 }
 
+type CoinAdditionParams struct {
+	Username string
+	Amount   int64
+}
+
+type CoinAdditionResponse struct {
+	Code    int
+	Message string
+	Balance int64
+}
+
 // Error Response
 type Error struct {
 	// Error Code

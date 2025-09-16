@@ -67,3 +67,22 @@ func (d *mockDB) GetUserCoins(username string) *CoinDetails {
 func (d *mockDB) SetupDatabase() error {
 	return nil
 }
+
+func (d *mockDB) AddUserCoins(username string, amount int64) *CoinDetails {
+	// Simulate DB call
+	time.Sleep(time.Second * 1)
+
+	var clientData = CoinDetails{}
+	clientData, ok := mockCoinDetails[username]
+	if !ok {
+		return nil
+	}
+
+	// update the coins
+	clientData.Coins = clientData.Coins + amount
+
+	// save changes back to the mock datbase
+	mockCoinDetails[username] = clientData
+
+	return &clientData
+}

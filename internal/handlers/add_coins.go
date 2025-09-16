@@ -32,7 +32,6 @@ func AddCoins(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	//update the coin balance
 	var updatedCoinBalance *tools.CoinDetails = (*database).AddUserCoins(params.Username, params.Amount)
 	if updatedCoinBalance == nil {
@@ -43,9 +42,9 @@ func AddCoins(w http.ResponseWriter, r *http.Request) {
 
 	//return the response
 	var response api.CoinAdditionResponse = api.CoinAdditionResponse{
-		Code: http.StatusOK,
+		Code:    http.StatusOK,
 		Message: "Your coin balance has been updated.",
-		Balance: updatedCoinBalance.Coins
+		Balance: updatedCoinBalance.Coins,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

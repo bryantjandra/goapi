@@ -14,7 +14,7 @@ var mockLoginDetails = map[string]LoginDetails{
 	},
 	"bryan": {
 		AuthToken: "2",
-		Username:  "jason",
+		Username:  "bryan",
 	},
 }
 
@@ -64,6 +64,11 @@ func (d *mockDB) AddUserCoins(username string, amount int64) *CoinDetails {
 	// Simulate DB call
 	time.Sleep(time.Second * 1)
 
+	// Validate amount is positive
+	if amount <= 0 {
+		return nil
+	}
+
 	var clientData = CoinDetails{}
 	clientData, ok := mockCoinDetails[username]
 	if !ok {
@@ -73,7 +78,7 @@ func (d *mockDB) AddUserCoins(username string, amount int64) *CoinDetails {
 	// update the coins
 	clientData.Coins = clientData.Coins + amount
 
-	// save changes back to the mock datbase
+	// save changes back to the mock database
 	mockCoinDetails[username] = clientData
 
 	return &clientData
@@ -82,6 +87,11 @@ func (d *mockDB) AddUserCoins(username string, amount int64) *CoinDetails {
 func (d *mockDB) WithdrawUserCoins(username string, amount int64) *CoinDetails {
 	// Simulate DB call
 	time.Sleep(time.Second * 1)
+
+	// Validate amount is positive
+	if amount <= 0 {
+		return nil
+	}
 
 	var clientData = CoinDetails{}
 	clientData, ok := mockCoinDetails[username]
@@ -106,6 +116,16 @@ func (d *mockDB) TransferUserCoins(from string, to string, amount int64) (fromDe
 	// Simulate DB call
 	time.Sleep(time.Second * 1)
 
+	// Validate amount is positive
+	if amount <= 0 {
+		return nil, nil
+	}
+
+	// Prevent self-transfer
+	if from == to {
+		return nil, nil
+	}
+
 	var fromData = CoinDetails{}
 	fromData, ok := mockCoinDetails[from]
 	if !ok {
@@ -123,7 +143,7 @@ func (d *mockDB) TransferUserCoins(from string, to string, amount int64) (fromDe
 		return nil, nil
 	}
 
-	//update sender's and receiver's balance
+	// update sender's and receiver's balance
 	fromData.Coins = fromData.Coins - amount
 	mockCoinDetails[from] = fromData
 
@@ -131,5 +151,4 @@ func (d *mockDB) TransferUserCoins(from string, to string, amount int64) (fromDe
 	mockCoinDetails[to] = toData
 
 	return &fromData, &toData
-
 }

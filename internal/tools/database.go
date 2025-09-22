@@ -24,12 +24,15 @@ type DatabaseInterface interface {
 }
 
 func NewDatabase() (*DatabaseInterface, error) {
+	log.Debug("Creating new database connection")
+
 	var database DatabaseInterface = &mockDB{}
 	var err error = database.SetupDatabase()
 	if err != nil {
-		log.Error(err)
+		log.Error("Failed to setup database: ", err)
 		return nil, err
 	}
 
+	log.Debug("Database connection established successfully")
 	return &database, nil
 }

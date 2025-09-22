@@ -15,26 +15,24 @@ func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var username string = r.URL.Query().Get("username")
 		var token = r.Header.Get("Authorization")
-		var err error
 
 		if username == "" || token == "" {
-			log.Error(UnAuthorizedError)
+			log.Error("Authorization failed: missing username or token")
 			api.RequestErrorHandler(w, UnAuthorizedError)
 			return
 		}
 
-		var database *tools.DatabaseInterface
-		database, err = tools.NewDatabase()
+		database, err := tools.NewDatabase()
 		if err != nil {
+			log.Error("Failed to connect to database during authorization: ", err)
 			api.InternalErrorHandler(w)
 			return
 		}
 
-		var loginDetails *tools.LoginDetails
-		loginDetails = (*database).GetUserLoginDetails(username)
+		loginDetails := (*database).GetUserLoginDetails(username)
 
 		if loginDetails == nil || (token != (*loginDetails).AuthToken) {
-			log.Error(UnAuthorizedError)
+			log.Error("Authorization failed for user: ", username, " - invalid credentials")
 			api.RequestErrorHandler(w, UnAuthorizedError)
 			return
 		}

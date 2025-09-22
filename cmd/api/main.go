@@ -11,13 +11,17 @@ import (
 
 func main() {
 	log.SetReportCaller(true)
+
+	log.Info("Initializing GO API Service...")
+
 	var r *chi.Mux = chi.NewRouter()
 	handlers.Handler(r)
 
 	fmt.Println("Starting GO API Service...")
+	log.Info("Server starting on localhost:3000")
 
 	err := http.ListenAndServe("localhost:3000", r)
 	if err != nil {
-		log.Error(err)
+		log.Fatal("Failed to start server: ", err)
 	}
 }

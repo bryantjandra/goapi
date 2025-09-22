@@ -19,31 +19,38 @@ func WithdrawCoins(w http.ResponseWriter, r *http.Request) {
 	var err error = decoder.Decode(&params, r.URL.Query())
 
 	if err != nil {
-		log.Error(err)
-		api.InternalErrorHandler(w)
+		log.Error("Failed to parse request parameters: ", err)
+		api.RequestErrorHandler(w, err)
 		return
 	}
 
 	var database *tools.DatabaseInterface
 	database, err = tools.NewDatabase()
 	if err != nil {
-		log.Error(err)
+		log.Error("Failed to connect to database: ", err)
 		api.InternalErrorHandler(w)
+		return
+	}
+
+	// Validate amount is positive
+	if params.Amount <= 0 {
+		log.Error("Invalid amount: must be positive, got: ", params.Amount)
+		api.RequestErrorHandler(w, fmt.Errorf("amount must be positive"))
 		return
 	}
 
 	// Get original balance before withdrawal
 	var originalBalance *tools.CoinDetails = (*database).GetUserCoins(params.Username)
 	if originalBalance == nil {
-		log.Error("User not found")
-		api.InternalErrorHandler(w)
+		log.Error("User not found: ", params.Username)
+		api.RequestErrorHandler(w, fmt.Errorf("user not found"))
 		return
 	}
 
 	var updatedCoinBalance *tools.CoinDetails = (*database).WithdrawUserCoins(params.Username, params.Amount)
 	if updatedCoinBalance == nil {
-		log.Error(err)
-		api.InternalErrorHandler(w)
+		log.Error("Withdrawal failed for user: ", params.Username, " amount: ", params.Amount)
+		api.RequestErrorHandler(w, fmt.Errorf("insufficient funds or invalid amount"))
 		return
 	}
 
@@ -58,7 +65,7 @@ func WithdrawCoins(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(response)
 
 	if err != nil {
-		log.Error(err)
+		log.Error("Failed to encode response: ", err)
 		api.InternalErrorHandler(w)
 		return
 	}

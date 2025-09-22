@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/bryantjandra/goapi/api"
@@ -18,23 +19,22 @@ func GetCoinBalance(w http.ResponseWriter, r *http.Request) {
 	err = decoder.Decode(&params, r.URL.Query())
 
 	if err != nil {
-		log.Error(err)
-		api.InternalErrorHandler(w)
+		log.Error("Failed to parse request parameters: ", err)
+		api.RequestErrorHandler(w, err)
 		return
 	}
 
-	var database *tools.DatabaseInterface
-	database, err = tools.NewDatabase()
+	database, err := tools.NewDatabase()
 	if err != nil {
+		log.Error("Failed to connect to database: ", err)
 		api.InternalErrorHandler(w)
 		return
 	}
 
-	var tokenDetails *tools.CoinDetails
-	tokenDetails = (*database).GetUserCoins(params.Username)
+	tokenDetails := (*database).GetUserCoins(params.Username)
 	if tokenDetails == nil {
-		log.Error(err)
-		api.InternalErrorHandler(w)
+		log.Error("User not found: ", params.Username)
+		api.RequestErrorHandler(w, fmt.Errorf("user not found"))
 		return
 	}
 
@@ -46,7 +46,7 @@ func GetCoinBalance(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
-		log.Error(err)
+		log.Error("Failed to encode response: ", err)
 		api.InternalErrorHandler(w)
 		return
 	}

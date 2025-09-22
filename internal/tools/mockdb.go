@@ -8,33 +8,25 @@ type mockDB struct{}
 
 // Mock login details database
 var mockLoginDetails = map[string]LoginDetails{
-	"alex": {
-		AuthToken: "123ABC",
-		Username:  "alex",
+	"aaron": {
+		AuthToken: "1",
+		Username:  "aaron",
 	},
-	"jason": {
-		AuthToken: "456DEF",
+	"bryan": {
+		AuthToken: "2",
 		Username:  "jason",
-	},
-	"marie": {
-		AuthToken: "789GHI",
-		Username:  "marie",
 	},
 }
 
 // Mock coin balance database
 var mockCoinDetails = map[string]CoinDetails{
-	"alex": {
-		Coins:    100,
-		Username: "alex",
+	"aaron": {
+		Coins:    1000,
+		Username: "aaron",
 	},
-	"jason": {
-		Coins:    200,
-		Username: "jason",
-	},
-	"marie": {
-		Coins:    300,
-		Username: "marie",
+	"bryan": {
+		Coins:    1000,
+		Username: "bryan",
 	},
 }
 
@@ -108,4 +100,36 @@ func (d *mockDB) WithdrawUserCoins(username string, amount int64) *CoinDetails {
 	mockCoinDetails[username] = clientData
 
 	return &clientData
+}
+
+func (d *mockDB) TransferUserCoins(from string, to string, amount int64) (fromDetails *CoinDetails, toDetails *CoinDetails) {
+	// Simulate DB call
+	time.Sleep(time.Second * 1)
+
+	var fromData = CoinDetails{}
+	fromData, ok := mockCoinDetails[from]
+	if !ok {
+		return nil, nil
+	}
+
+	var toData = CoinDetails{}
+	toData, okTwo := mockCoinDetails[to]
+	if !okTwo {
+		return nil, nil
+	}
+
+	// check sufficient balance
+	if fromData.Coins < amount {
+		return nil, nil
+	}
+
+	//update sender's and receiver's balance
+	fromData.Coins = fromData.Coins - amount
+	mockCoinDetails[from] = fromData
+
+	toData.Coins = toData.Coins + amount
+	mockCoinDetails[to] = toData
+
+	return &fromData, &toData
+
 }

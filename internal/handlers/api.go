@@ -18,6 +18,6 @@ func Handler(r *chi.Mux) {
 		router.Get("/coins", GetCoinBalance)
 		router.Post("/coins/add", AddCoins)
 		router.Post("/coins/withdraw", WithdrawCoins)
-
+		router.Post("/coins/transfer", TransferCoins)
 	})
 }

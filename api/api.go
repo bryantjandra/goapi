@@ -42,6 +42,20 @@ type CoinWithdrawResponse struct {
 	Balance int64
 }
 
+type CoinTransferParams struct {
+	Username string
+	From     string
+	To       string
+	Amount   int64
+}
+
+type CoinTransferResponse struct {
+	Code        int
+	Message     string
+	FromBalance int64
+	ToBalance   int64
+}
+
 // Error Response
 type Error struct {
 	// Error Code

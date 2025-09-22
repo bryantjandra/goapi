@@ -19,6 +19,7 @@ type DatabaseInterface interface {
 	GetUserCoins(username string) *CoinDetails
 	AddUserCoins(username string, amount int64) *CoinDetails
 	WithdrawUserCoins(username string, amount int64) *CoinDetails
+	TransferUserCoins(from string, to string, amount int64) (fromDetails *CoinDetails, toDetails *CoinDetails)
 	SetupDatabase() error
 }
 

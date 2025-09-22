@@ -86,3 +86,26 @@ func (d *mockDB) AddUserCoins(username string, amount int64) *CoinDetails {
 
 	return &clientData
 }
+
+func (d *mockDB) WithdrawUserCoins(username string, amount int64) *CoinDetails {
+	// Simulate DB call
+	time.Sleep(time.Second * 1)
+
+	var clientData = CoinDetails{}
+	clientData, ok := mockCoinDetails[username]
+	if !ok {
+		return nil
+	}
+
+	if amount > clientData.Coins {
+		return nil
+	}
+
+	// decrement the coin balance
+	clientData.Coins = clientData.Coins - amount
+
+	// save changes back to mock db
+	mockCoinDetails[username] = clientData
+
+	return &clientData
+}

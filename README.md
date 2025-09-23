@@ -1,6 +1,6 @@
 # GoLedger
 
-A **financial API service** built in Go, demonstrating enterprise-level backend engineering with **performant concurrency**, **financial system compliance**, and **scalable architecture**. This project showcases advanced Go patterns including mutex-based concurrency control, comprehensive testing (context-based cancellation), and financial-grade security.
+A **financial API service** built in Go, demonstrating enterprise-level backend engineering with **thread-safe concurrency**, **financial system compliance**, and **scalable architecture**. This project showcases advanced Go patterns including mutex-based concurrency control, comprehensive testing (context-based cancellation), and financial-grade security.
 
 ## 🏆 Key Achievements
 

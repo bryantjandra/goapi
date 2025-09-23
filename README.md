@@ -1,13 +1,13 @@
 # GoLedger
 
-A **financial API service** built in Go, demonstrating enterprise-level backend engineering with **thread-safe concurrency**, **financial system compliance**, and **scalable architecture**. This project showcases advanced Go patterns including mutex-based concurrency control, comprehensive testing (context-based cancellation), and financial-grade security.
+A **financial API service** built in Go, demonstrating enterprise-level backend engineering with **thread-safe concurrency**, **financial scenario simulations and system compliance**, and a **scalable architecture**. This project showcases advanced Go patterns, including mutex-based concurrency control, comprehensive testing (with context-based cancellation), and financial-grade security.
 
-## 🏆 Key Achievements
+## 🏆 Key Metrics
 
 - **186,075 operations/second** - Enterprise-grade performance
 - **Zero race conditions** - Thread-safe financial operations
 - **Sub-millisecond latency** - 0.537ms average response time
-- **Financial compliance** - Complete audit trails and ACID properties
+- **Financial scenario simulations & compliance** - High-Frequency Trading simulations, payment processing workflows, deadlock prevention testing, and auditing
 - **Production-ready** - Comprehensive error handling and monitoring
 
 ## 🏗️ Architecture Overview
@@ -29,7 +29,7 @@ A **financial API service** built in Go, demonstrating enterprise-level backend 
 ### Concurrency Model
 
 - **RWMutex**: Concurrent reads, exclusive writes
-- **Multi-level locking**: Separate mutexes for data, audit, and health
+- **Multi-level locking**: Separate mutexes for data, audit, and health monitoring
 - **Context cancellation**: Timeout and cancellation support
 - **Optimistic locking**: Version-based conflict detection
 
@@ -56,46 +56,148 @@ goapi/
 └── README.md                   # Project documentation
 ```
 
-## 🚀 Technical Features
 
-### High-Performance Concurrency
+## 🧪 Testing & Quality Assurance
 
-- **Thread-safe operations** using `sync.RWMutex`
-- **186,075 ops/sec** throughput with sub-millisecond latency
-- **Concurrent read optimization** for balance queries
-- **Deadlock prevention** with consistent lock ordering
+The project includes a **two-tier testing strategy** that demonstrates both fundamental concurrency safety and real-world financial scenario simulations:
 
-### Financial System Compliance
+```
+internal/tools/
+├── basic_test.go      # Core concurrency & race condition testing
+├── financial_test.go  # Financial system scenarios
+├── database.go        # Interface definitions
+└── mockdb.go         # High-performance implementation
+```
 
-- **ACID properties** - Atomic, Consistent, Isolated, Durable transactions
-- **Audit trails** - Complete transaction logging with unique IDs
-- **Money conservation** - Mathematical guarantees preventing money creation/destruction
-- **Version control** - Optimistic locking for conflict detection
+## Basic Concurrency Tests (`basic_test.go`)
 
-### Production-Ready Features
+**Purpose**: Validates fundamental thread safety and concurrency patterns essential for any financial system.
 
-- **Context-aware operations** with timeout and cancellation support
-- **Comprehensive error handling** with structured logging
-- **Health monitoring** - System status and performance metrics
-- **Security middleware** - Token-based authentication on all endpoints
+### Test Coverage
 
-### Enterprise Testing
+- ✅ **Concurrent Deposits** - Multiple simultaneous balance additions
+- ✅ **Mixed Operations** - Deposits and withdrawals running concurrently
+- ✅ **Concurrent Transfers** - Multi-user transfer scenarios
+- ✅ **Read-Write Concurrency** - Simultaneous reads and writes with RWMutex
+- ✅ **Performance Benchmarks** - Individual operation performance testing
 
-- **Race condition testing** - Comprehensive concurrency validation
-- **Financial scenario simulation** - Bank runs, high-frequency trading, payment processing
-- **Performance benchmarking** - Load testing and bottleneck identification
-- **Audit compliance verification** - Transaction history and data integrity
+### Key Validations
 
-## 🔧 Technology Stack
+- Race condition detection and prevention
+- Money conservation across all operations
+- Data integrity under concurrent load
+- Sub-millisecond operation performance
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| **HTTP Router** | Chi | Fast, lightweight routing with middleware support |
-| **Concurrency** | sync.RWMutex | High-performance read-write locking |
-| **Logging** | Logrus | Structured logging with caller information |
-| **Testing** | Go testing + race detector | Comprehensive concurrency testing |
-| **Serialization** | encoding/json | Fast JSON encoding/decoding |
-| **Schema** | gorilla/schema | URL parameter parsing and validation |
+### Running Basic Tests
+
+```bash
+# Run basic concurrency tests
+go test ./internal/tools/ -run TestBasicConcurrency -v
+go test ./internal/tools/ -run TestPerformance -v
+
+# Run performance benchmarks
+go test -bench=BenchmarkBasicOperations ./internal/tools/
+```
+
+## Financial System Tests (`financial_test.go`)
+
+**Purpose**: Demonstrates understanding of financial scenarios and compliance requirements.
+
+### Advanced Scenarios
+
+#### 1. High-Frequency Trading Simulation
+
+- Simulates 50 concurrent trades between traders and exchange
+- Tests context-based timeouts and cancellation
+- Validates money conservation under extreme load
+- Measures successful vs failed trade ratios
+
+#### 2. Bank Run Stress Testing
+
+- Simulates panic withdrawals from multiple customers
+- Tests system stability under extreme withdrawal pressure
+- Validates no negative balance scenarios
+- Ensures graceful degradation under stress
+
+#### 3. Payment Processing Workflow
+
+- Two-phase payment processing (customer → processor → merchant)
+- 1% processing fee calculation and collection
+- Automatic rollback on payment failures
+- E-commerce transaction pattern simulation
+
+#### 4. Deadlock Prevention Testing
+
+- Circular transfer scenarios (A→B while B→A)
+- Timeout-based deadlock detection
+- System responsiveness under potential deadlock conditions
+- Money conservation during complex transfer patterns
+
+#### 5. Compliance & Auditing
+
+- Complete audit trail verification
+- Transaction history tracking for regulatory compliance
+- System health monitoring and reporting
+- Data integrity validation across all operations
+
+### Running Financial Tests
+
+```bash
+# Run financial system scenarios
+go test ./internal/tools/ -run TestFinancialSystemScenarios -v
+
+# Run compliance and auditing tests
+go test ./internal/tools/ -run TestComplianceAndAuditing -v
+```
+
+## Test Execution Commands
+
+```bash
+# Run all tests with race detection
+go test -race ./internal/tools/ -v
+
+# Run specific test categories
+go test ./internal/tools/ -run TestBasicConcurrency -v
+go test ./internal/tools/ -run TestFinancialSystemScenarios -v
+
+# Performance benchmarking
+go test -bench=. ./internal/tools/ -benchmem
+
+# Generate test coverage report
+go test ./internal/tools/ -cover -coverprofile=coverage.out
+go tool cover -html=coverage.out
+```
+
+## 📊 Monitoring & Observability
+
+### Health Endpoint
+
+```bash
+# System health and metrics
+GET /system/health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "uptime_seconds": 3600.5,
+  "operation_count": 1000000,
+  "components": {
+    "database": true,
+    "audit_log": true,
+    "performance": true
+  }
+}
+```
+
+### Audit Trail
+
+- Complete transaction history
+- Unique transaction IDs
+- Timestamp tracking
+- Status monitoring (SUCCESS/FAILED)
+
 
 ## 🌐 API Endpoints
 
@@ -137,103 +239,8 @@ curl -X POST \
 Performance: 100 operations in 537.417µs (186,075.25 ops/sec)
 ```
 
-### Comparison with Industry Standards
-
-- **Traditional Banks**: 1,000-5,000 ops/sec → **37x faster**
-- **Payment Processors**: 20,000-100,000 ops/sec → **2x faster**
-
 ### Latency Distribution
 
 - **P50**: 0.3ms
 - **P95**: 0.8ms
 - **P99**: 1.2ms
-
-## 🧪 Testing & Quality Assurance
-
-### Concurrency Testing
-
-```bash
-go test -race ./internal/tools/ -v
-```
-
-**Test Coverage:**
-- ✅ Race condition detection
-- ✅ Deadlock prevention
-- ✅ Data integrity verification
-- ✅ Performance under load
-- ✅ Financial scenario simulation
-
-### Financial System Scenarios
-
-- **High-frequency trading simulation**
-- **Bank run stress testing**
-- **Payment processing workflows**
-- **Audit trail verification**
-- **Money conservation validation**
-
-## 🚀 Quick Start
-
-### 1. Setup
-
-```bash
-git clone <repository-url>
-cd goapi
-go mod tidy
-```
-
-### 2. Run Server
-
-```bash
-go run cmd/api/main.go
-```
-
-### 3. Run Tests
-
-```bash
-# Basic functionality
-go test ./...
-
-# Race condition testing
-go test -race ./internal/tools/ -v
-
-# Performance benchmarks
-go test -bench=. ./internal/tools/
-```
-
-### 4. Test API
-
-```bash
-# Server runs on http://localhost:3000
-curl -H "Authorization: 1" \
-     "http://localhost:3000/account/coins?username=aaron"
-```
-
-## 📊 Monitoring & Observability
-
-### Health Endpoint
-
-```bash
-# System health and metrics
-GET /system/health
-```
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "uptime_seconds": 3600.5,
-  "operation_count": 1000000,
-  "components": {
-    "database": true,
-    "audit_log": true,
-    "performance": true
-  }
-}
-```
-
-### Audit Trail
-
-- Complete transaction history
-- Unique transaction IDs
-- Timestamp tracking
-- Status monitoring (SUCCESS/FAILED)

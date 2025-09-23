@@ -238,9 +238,3 @@ curl -X POST \
 ```
 Performance: 100 operations in 537.417µs (186,075.25 ops/sec)
 ```
-
-### Latency Distribution
-
-- **P50**: 0.3ms
-- **P95**: 0.8ms
-- **P99**: 1.2ms
